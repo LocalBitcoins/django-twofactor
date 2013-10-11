@@ -2,7 +2,7 @@ from base64 import b32encode
 from binascii import hexlify
 from urllib import urlencode
 from django_twofactor.encutil import encrypt, decrypt, _gen_salt
-from oath import accept_totp
+from oath import accept_hotp, accept_totp
 from django.conf import settings
 
 # Get best `random` implementation we can.
@@ -51,6 +51,25 @@ def check_raw_seed(raw_seed, auth_code, token_type=None):
         forward_drift=FORWARD_DRIFT,
         backward_drift=BACKWARD_DRIFT
     )[0]
+
+def check_hotp(raw_seed, auth_code, counter, token_type=None):
+    """
+    Checks whether `auth_code` is a valid authentication code for `counter`
+    based on the `raw_seed` (raw byte string representation of `seed`).
+
+    Return a tuple in form (`is_valid`, `new_counter`).
+    """
+    if not token_type:
+        token_type = DEFAULT_TOKEN_TYPE
+    return accept_hotp(
+        hexlify(raw_seed),
+        auth_code,
+        counter,
+        token_type,
+        # TODO: the drifts / TOTP settings
+        drift=FORWARD_DRIFT,
+        backward_drift=BACKWARD_DRIFT
+    )
 
 def get_google_url(raw_seed, hostname=None):
     # Note: Google uses base32 for it's encoding rather than hex.

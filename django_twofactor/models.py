@@ -1,10 +1,11 @@
 from django.db import models
-from django_twofactor.util import decrypt_value, check_raw_seed, get_google_url
+from django_twofactor.util import (
+    check_hotp, decrypt_value, check_raw_seed, get_google_url)
 from base64 import b32encode
 from socket import gethostname
 
 
-class UserAuthToken(models.Model):
+class BaseUserAuthToken(models.Model):
     user = models.OneToOneField("auth.User")
     encrypted_seed = models.CharField(max_length=120)  # fits 16b salt+40b seed
 
@@ -12,6 +13,23 @@ class UserAuthToken(models.Model):
         verbose_name="created", auto_now_add=True)
     updated_datetime = models.DateTimeField(
         verbose_name="last updated", auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def check_auth_code(self, auth_code):
+        raise NotImplementedError
+
+    def b32_secret(self):
+        """
+        The base32 version of the seed (for input into Google Authenticator
+        and similar soft token devices.
+        """
+        return b32encode(decrypt_value(self.encrypted_seed))
+
+
+class UserAuthToken(BaseUserAuthToken):
+    """TOTP implementation"""
 
     def check_auth_code(self, auth_code):
         """
@@ -35,9 +53,18 @@ class UserAuthToken(models.Model):
             name
         )
 
-    def b32_secret(self):
+
+class UserAuthHotpToken(BaseUserAuthToken):
+    counter = models.PositiveIntegerField(default=0)
+
+    def check_auth_code(self, auth_code):
         """
-        The base32 version of the seed (for input into Google Authenticator
-        and similar soft token devices.
+        Checks whether `auth_code` is a valid authentication code for this
+        user, for the current iteration.
         """
-        return b32encode(decrypt_value(self.encrypted_seed))
+        correct, counter = check_hotp(
+            decrypt_value(self.encrypted_seed), auth_code, self.counter)
+        if correct:
+            self.counter = counter
+            self.save()
+        return correct
