@@ -10,7 +10,8 @@ ERROR_MESSAGE = _("Please enter the correct username, password and "
 
 class TwoFactorAuthenticationForm(AuthenticationForm):
     token = forms.IntegerField(label=_("Authentication Code"),
-        help_text="If you have enabled two-factor authentication, enter the six-digit number from your authentication device here.",
+        help_text="If you have enabled two-factor authentication, enter the "
+        "six-digit number from your authentication device or grid card here.",
         widget=forms.TextInput(attrs={'maxlength':'6'}),
         min_value=1, max_value=999999,
         required=False
