@@ -15,7 +15,8 @@ class UserAuthToken(models.Model):
 
     user = models.OneToOneField("auth.User")
     encrypted_seed = models.CharField(max_length=120)  # fits 16b salt+40b seed
-    type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES)
+    type = models.PositiveSmallIntegerField(
+        choices=TYPE_CHOICES, default=TYPE_TOTP)
 
     counter = models.PositiveIntegerField(default=0)  # for HOTP
 
