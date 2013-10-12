@@ -20,9 +20,11 @@ SECRET_KEY = "sekrit"
 
 TWOFACTOR_TOTP_OPTIONS = {
         "period": 30,
-        "forward_drift": 0,
-        "backward_drift": 0,
         "default_token_type": "dec6",
+        # Specify drifts for the unlucky scenario where the period ends after
+        # the correct seed is calculated but before authenticate is called
+        "forward_drift": 2,
+        "backward_drift": 2,
 }
 
 TWOFACTOR_ENCRYPTION_KEY = ""

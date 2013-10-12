@@ -8,6 +8,8 @@ from .util import encrypt_value
 
 
 class TotpTests(TestCase):
+    # TODO: mock time / test drifts...
+
     def setUp(self):
         self.user = User.objects.create_user(
             username="user", password="secret")
