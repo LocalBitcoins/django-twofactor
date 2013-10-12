@@ -35,6 +35,12 @@
         <label for="id_reset_confirmation" class="required">{% if has_token %}{% trans 'Reset authentication' %}{% else %}{% trans 'Enable authentication' %}{% endif %}:</label>{{ resetform.reset_confirmation }}
     </div>
 
+    <div class="form-row">
+        {{ resetform.type.errors }}
+        <label for="id_type" class="required">Authentication type:</label>
+        {{ resetform.type }}
+    </div>
+
     </fieldset>
 
     <div class="submit-row">

@@ -1,7 +1,34 @@
 {% extends "twofactor_admin/base_site.html" %}
 {% load i18n adminmedia %}
 {% load url from future %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+<style>
+    .twofactor-grid {
+        width: 500px;
+    }
+    .twofactor-grid:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    .twofactor-grid ul {
+        float: left;
+        padding-left: 0;
+        margin-right: 1.5em;
+    }
+    .twofactor-grid ul li {
+        list-style-type: none;
+    }
+    .twofactor-grid .counter {
+        float: left;
+        width: 2em;
+        padding-right: 1em;
+        text-align: right;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
 {% block userlinks %}{% include "twofactor_admin/_userlinks.html" %}{% endblock %}
 {% block breadcrumbs %}<div class="breadcrumbs"><a href="../">{% trans 'Home' %}</a> &rsaquo; {% trans 'Two-factor authentication' %}</div>{% endblock %}
 
@@ -9,6 +36,7 @@
 
 {% block content %}<div id="content-main">
 
+{% if token.is_totp %}
 <p>{% trans "Two-factor authentication enabled" %}. Please scan the following QR code into your authentication device or manually enter the information below:</p>
 <p><img src="{{ token.google_url }}"/></p>
 <ul>
@@ -16,6 +44,10 @@
 <li><b>Account</b>: {{ user.username }}</li>
 <li><b>Key</b>: {{ token.b32_secret }}</li>
 </ul>
+{% elif token.is_hotp %}
+<p>{% trans "Two-factor authentication enabled" %}. Please print out the following grid card:</p>
+{% include "twofactor/hotp_grid.html" %}
+{% endif %}
 
 </div>
 

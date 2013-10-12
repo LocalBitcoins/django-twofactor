@@ -54,9 +54,9 @@ class TwoFactorAuthAdminSite(AdminSite):
                     context_instance=RequestContext(request)
                 )
         if not resetform:
-            resetform = ResetTwoFactorAuthForm(user=None)
+            resetform = ResetTwoFactorAuthForm(user=request.user)
         if not disableform:
-            disableform = DisableTwoFactorAuthForm(user=None)
+            disableform = DisableTwoFactorAuthForm(user=request.user)
 
         has_token = bool(UserAuthToken.objects.filter(user=request.user))
 

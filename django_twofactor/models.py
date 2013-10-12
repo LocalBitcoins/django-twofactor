@@ -1,6 +1,13 @@
 from django.db import models
 from django_twofactor.util import (
-    check_hotp, decrypt_value, check_raw_seed, get_google_url)
+    check_raw_seed,
+    check_hotp,
+    decrypt_value,
+    encrypt_value,
+    get_hotp,
+    get_google_url,
+    random_seed,
+)
 from base64 import b32encode
 from socket import gethostname
 
@@ -50,6 +57,21 @@ class UserAuthToken(models.Model):
             self.save()
         return correct
 
+    def regenerate_seed(self):
+        """
+        Generates a new random seed and takes care of everything that needs to
+        be done after that (e.g. reseting HOTP counter). Doesn't save the
+        model.
+        """
+        self.encrypted_seed = encrypt_value(random_seed(30))
+        self.counter = 0
+
+    def is_totp(self):
+        return self.type == self.TYPE_TOTP
+
+    def is_hotp(self):
+        return self.type == self.TYPE_HOTP
+
     def b32_secret(self):
         """
         The base32 version of the seed (for input into Google Authenticator
@@ -61,8 +83,6 @@ class UserAuthToken(models.Model):
         """
         The Google Charts QR code version of the seed, plus an optional
         name for this (defaults to "username@hostname").
-
-        To be only used with the TOTP implementation.
         """
         if not name:
             username = self.user.username
@@ -73,3 +93,11 @@ class UserAuthToken(models.Model):
             decrypt_value(self.encrypted_seed),
             name
         )
+
+    def list_codes(self):
+        """
+        Get a generator over 100 first HOTP codes.
+        """
+        seed = decrypt_value(self.encrypted_seed)
+        for i in range(100):
+            yield get_hotp(seed, i)
