@@ -58,6 +58,12 @@ form label.required {
     <h1>Logged in</h1>
 
     <p>You are logged in as <b>{% firstof user.get_full_name user %}</b>. <a href="/logout/">Click here to log out</a>.</p>
+    <p>
+        Two-factor authentication is <strong>{{ user.userauthtoken|yesno:"enabled,disabled" }}</strong>.
+        <a href="{% url "change-settings" %}">
+            Change your two-factor authentication settings.
+        </a>
+    </p>
 {% else %}
     <h1>Please log in</h1>
 

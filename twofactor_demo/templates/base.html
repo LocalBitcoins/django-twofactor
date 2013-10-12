@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Twofactor demo</title>
+        <!-- Twitter bootstrap for extra hipness -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" />
+        <style>
+            .twofactor-grid {
+                width: 600px;
+            }
+            .twofactor-grid:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+            .twofactor-grid ul {
+                float: left;
+                padding-left: 0;
+                margin: 0 1.5em 1em 0;
+            }
+            .twofactor-grid ul li {
+                list-style-type: none;
+            }
+            .twofactor-grid .counter {
+                float: left;
+                width: 2em;
+                padding-right: 1em;
+                text-align: right;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </body>
+</html>

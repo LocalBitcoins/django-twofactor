@@ -20,4 +20,8 @@ urlpatterns = patterns('',
     (r'^logout/$', 'django.contrib.auth.views.logout_then_login', {
         'login_url': '/'
     }),
+    url(r'^settings/$', 'twofactor_demo.views.change_settings',
+        name="change-settings"),
+    url(r'^auth_enabled/$', 'twofactor_demo.views.auth_enabled',
+        name="auth-enabled"),
 ) + staticfiles_urlpatterns()

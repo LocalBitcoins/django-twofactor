@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="page-header">
+    Two-factor authentication controls
+</h1>
+
+<p>
+Two-factor authentication is <strong>{{ user.userauthtoken|yesno:"enabled,disabled" }}</strong>.
+</p>
+
+{% if user.userauthtoken %}
+<div class="row-fluid">
+    <form method="post" action="." class="well span6">
+        {% csrf_token %}
+
+        {{ reset_form.reset_confirmation.errors }}
+        <label class="checkbox">
+            {{ reset_form.reset_confirmation }}
+            Reset authentication token
+        </label>
+
+        <div>
+        {{ reset_form.type.errors }}
+        {{ reset_form.type.label_tag }}
+        {{ reset_form.type }}
+        </div>
+
+        <button class="btn btn-primary" type="submit">
+            Submit
+        </button>
+    </form>
+
+    <form method="post" action="." class="well span6">
+        {% csrf_token %}
+        {{ disable_form.disable_confirmation.errors }}
+        <label class="checkbox">
+            {{ disable_form.disable_confirmation }}
+            Disable two-factor authentication
+        </label>
+
+        <button class="btn btn-danger" type="submit">
+            Submit
+        </button>
+    </form>
+</div>
+{% else %}
+<form method="post" action="." class="well">
+    {% csrf_token %}
+
+    {{ reset_form.reset_confirmation.errors }}
+    <label class="checkbox">
+        {{ reset_form.reset_confirmation }}
+        Enable two-factor authentication.
+    </label>
+
+    <div>
+    {{ reset_form.type.errors }}
+    {{ reset_form.type.label_tag }}
+    {{ reset_form.type }}
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        Submit
+    </button>
+</form>
+{% endif %}
+
+{% endblock %}
