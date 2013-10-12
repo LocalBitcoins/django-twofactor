@@ -56,8 +56,6 @@ def check_hotp(raw_seed, auth_code, counter, token_type=None):
     """
     Checks whether `auth_code` is a valid authentication code for `counter`
     based on the `raw_seed` (raw byte string representation of `seed`).
-
-    Return a tuple in form (`is_valid`, `new_counter`).
     """
     if not token_type:
         token_type = DEFAULT_TOKEN_TYPE
@@ -66,10 +64,11 @@ def check_hotp(raw_seed, auth_code, counter, token_type=None):
         auth_code,
         counter,
         token_type,
-        # TODO: the drifts / TOTP settings
-        drift=FORWARD_DRIFT,
-        backward_drift=BACKWARD_DRIFT
-    )
+        # Don't support drifts yet -- need to return the new counter if support
+        # for drifts is added.
+        drift=0,
+        backward_drift=0
+    )[0]
 
 def get_google_url(raw_seed, hostname=None):
     # Note: Google uses base32 for it's encoding rather than hex.

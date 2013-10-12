@@ -62,9 +62,9 @@ class UserAuthHotpToken(BaseUserAuthToken):
         Checks whether `auth_code` is a valid authentication code for this
         user, for the current iteration.
         """
-        correct, counter = check_hotp(
+        correct = check_hotp(
             decrypt_value(self.encrypted_seed), auth_code, self.counter)
         if correct:
-            self.counter = counter
+            self.counter += 1
             self.save()
         return correct
