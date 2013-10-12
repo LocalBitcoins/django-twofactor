@@ -5,20 +5,49 @@ from base64 import b32encode
 from socket import gethostname
 
 
-class BaseUserAuthToken(models.Model):
+class UserAuthToken(models.Model):
+    TYPE_TOTP = 1
+    TYPE_HOTP = 2
+    TYPE_CHOICES = (
+        (TYPE_TOTP, "Google authenticator"),
+        (TYPE_HOTP, "Grid card"),
+    )
+
     user = models.OneToOneField("auth.User")
     encrypted_seed = models.CharField(max_length=120)  # fits 16b salt+40b seed
+    type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES)
+
+    counter = models.PositiveIntegerField(default=0)  # for HOTP
 
     created_datetime = models.DateTimeField(
         verbose_name="created", auto_now_add=True)
     updated_datetime = models.DateTimeField(
         verbose_name="last updated", auto_now=True)
 
-    class Meta:
-        abstract = True
-
     def check_auth_code(self, auth_code):
-        raise NotImplementedError
+        if self.type == self.TYPE_TOTP:
+            return self._check_auth_code_totp(auth_code)
+        else:
+            return self._check_auth_code_hotp(auth_code)
+
+    def _check_auth_code_totp(self, auth_code):
+        """
+        Checks whether `auth_code` is a valid authentication code for this
+        user, at the current time. (TOTP)
+        """
+        return check_raw_seed(decrypt_value(self.encrypted_seed), auth_code)
+
+    def _check_auth_code_hotp(self, auth_code):
+        """
+        Checks whether `auth_code` is a valid authentication code for this
+        user, for the current iteration. (HOTP)
+        """
+        correct = check_hotp(
+            decrypt_value(self.encrypted_seed), auth_code, self.counter)
+        if correct:
+            self.counter += 1
+            self.save()
+        return correct
 
     def b32_secret(self):
         """
@@ -27,21 +56,12 @@ class BaseUserAuthToken(models.Model):
         """
         return b32encode(decrypt_value(self.encrypted_seed))
 
-
-class UserAuthToken(BaseUserAuthToken):
-    """TOTP implementation"""
-
-    def check_auth_code(self, auth_code):
-        """
-        Checks whether `auth_code` is a valid authentication code for this
-        user, at the current time.
-        """
-        return check_raw_seed(decrypt_value(self.encrypted_seed), auth_code)
-
     def google_url(self, name=None):
         """
         The Google Charts QR code version of the seed, plus an optional
         name for this (defaults to "username@hostname").
+
+        To be only used with the TOTP implementation.
         """
         if not name:
             username = self.user.username
@@ -52,19 +72,3 @@ class UserAuthToken(BaseUserAuthToken):
             decrypt_value(self.encrypted_seed),
             name
         )
-
-
-class UserAuthHotpToken(BaseUserAuthToken):
-    counter = models.PositiveIntegerField(default=0)
-
-    def check_auth_code(self, auth_code):
-        """
-        Checks whether `auth_code` is a valid authentication code for this
-        user, for the current iteration.
-        """
-        correct = check_hotp(
-            decrypt_value(self.encrypted_seed), auth_code, self.counter)
-        if correct:
-            self.counter += 1
-            self.save()
-        return correct

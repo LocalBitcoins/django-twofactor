@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from oath import totp
-from .models import UserAuthToken, UserAuthHotpToken
+from .models import UserAuthToken
 from .util import encrypt_value
 
 
@@ -12,7 +12,8 @@ class TotpTests(TestCase):
         self.user = User.objects.create_user(
             username="user", password="secret")
         UserAuthToken.objects.create(
-            user=self.user, encrypted_seed=encrypt_value("s33d"))
+            user=self.user, encrypted_seed=encrypt_value("s33d"),
+            type=UserAuthToken.TYPE_TOTP)
         self.correct_code = totp(hexlify("s33d"))
 
     def test_basic_auth(self):
@@ -55,8 +56,9 @@ class HotpTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username="user", password="secret")
-        self.auth_token = UserAuthHotpToken.objects.create(
-            user=self.user, encrypted_seed=encrypt_value("s33d"))
+        self.auth_token = UserAuthToken.objects.create(
+            user=self.user, encrypted_seed=encrypt_value("s33d"),
+            type=UserAuthToken.TYPE_HOTP)
 
     def test_initial_counter(self):
         self.assertEqual(0, self.auth_token.counter)
