@@ -43,4 +43,8 @@ def encrypt(data, salt):
 def decrypt(encrypted_data, salt):
     cipher = AES.new(_get_key(salt), mode=AES.MODE_ECB)
 
+    # Note: this doesn't return the correct raw data if it has a null character
+    # ("\x00") somewhere. Correct way would be
+    #return cipher.decrypt(unhexlify(smart_str(encrypted_data))).rsplit('\0', 1)[0]
+    # However, fixing this would render some existing tokens unusable.
     return cipher.decrypt(unhexlify(smart_str(encrypted_data))).split('\0')[0]

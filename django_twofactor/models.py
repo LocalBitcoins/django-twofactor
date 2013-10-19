@@ -57,13 +57,15 @@ class UserAuthToken(models.Model):
             self.save()
         return correct
 
-    def regenerate_seed(self):
+    def reset_seed(self, seed=None):
         """
-        Generates a new random seed and takes care of everything that needs to
-        be done after that (e.g. reseting HOTP counter). Doesn't save the
-        model.
+        Resets seed to `seed` or to a new random seed, and takes care of
+        everything that needs to be done after that (e.g. reseting HOTP
+        counter). Doesn't save the model.
         """
-        self.encrypted_seed = encrypt_value(random_seed(30))
+        if seed is None:
+            seed = random_seed(30)
+        self.encrypted_seed = encrypt_value(seed)
         self.counter = 0
 
     def is_totp(self):

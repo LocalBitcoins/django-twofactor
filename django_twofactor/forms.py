@@ -1,5 +1,6 @@
 from django import forms
 from django_twofactor.models import UserAuthToken
+from django_twofactor import util
 
 
 class ResetTwoFactorAuthForm(forms.Form):
@@ -23,7 +24,7 @@ class ResetTwoFactorAuthForm(forms.Form):
             return None
 
         self.token.type = self.cleaned_data["type"]
-        self.token.regenerate_seed()
+        self.token.reset_seed()
         self.token.save()
         return self.token
 
@@ -42,3 +43,25 @@ class DisableTwoFactorAuthForm(forms.Form):
         UserAuthToken.objects.filter(user=self.user).delete()
 
         return self.user
+
+
+class GridCardActivationForm(forms.Form):
+    key = forms.CharField(max_length=11, required=True)
+    first_code = forms.CharField(max_length=6, required=True)
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(GridCardActivationForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        try:
+            token = UserAuthToken.objects.get(user=self.user)
+        except UserAuthToken.DoesNotExist:
+            token = UserAuthToken(user=self.user)
+
+        base36_with_checksum = self.cleaned_data["key"]
+        seed = util.key_to_seed(base36_with_checksum)
+        token.type = UserAuthToken.TYPE_HOTP
+        token.reset_seed(seed)
+        token.counter = 1
+        token.save()

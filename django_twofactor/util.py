@@ -1,5 +1,6 @@
 from base64 import b32encode
 from binascii import hexlify
+from hashlib import sha256, md5
 from urllib import urlencode
 from django_twofactor.encutil import encrypt, decrypt, _gen_salt
 from oath import accept_hotp, accept_totp, hotp
@@ -30,6 +31,8 @@ BACKWARD_DRIFT = TOTP_OPTIONS.get('backward_drift', 1)
 DEFAULT_TOKEN_TYPE = TOTP_OPTIONS.get('default_token_type', "dec6")
 
 ENCRYPTION_KEY = getattr(settings, "TWOFACTOR_ENCRYPTION_KEY", "")
+
+CHECKSUM_LENGTH = 1
 
 def random_seed(rawsize=10):
     """ Generates a random seed as a raw byte string. """
@@ -108,3 +111,15 @@ def get_google_url(raw_seed, hostname=None):
         "chl":data
     })
     return url
+
+def key_to_seed(key_with_checksum):
+    """
+    Get a seed that can be used with UserAuthToken from a key with a checksum
+    at its end.
+    """
+    key = key_with_checksum[:-CHECKSUM_LENGTH]
+    seed = sha256(key + settings.SECRET_KEY).digest()
+    # encutil.encrypt and encutil.decrypt use the null character as padding
+    # delimiter, and the seed should thus not contain it
+    seed = seed.replace("\x00", "0")
+    return seed

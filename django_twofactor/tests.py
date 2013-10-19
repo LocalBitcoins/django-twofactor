@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from oath import totp
 from .models import UserAuthToken
 from .util import encrypt_value
+from .forms import GridCardActivationForm
 
 
 TWOFACTOR_SETTINGS = {
@@ -99,4 +100,31 @@ class HotpTests(TestCase):
         self.assert_(not valid)
         self.assertEqual(1, self.auth_token.counter)
 
-    # TODO: integration tests with authenticate()
+
+
+@override_settings(**TWOFACTOR_SETTINGS)
+class GridCardActivationFormTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="user", password="secret")
+
+    def test_grid_card_activation(self):
+        codes = ["131779", "404121", "756246"]
+        data = {
+            "key": "brzguxg3uw7",
+            "first_code": codes[0],
+        }
+
+        form = GridCardActivationForm(self.user, data)
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        # The HOTP Token should be created
+        self.assert_(self.user.userauthtoken)
+        self.assertEqual(UserAuthToken.TYPE_HOTP, self.user.userauthtoken.type)
+
+        # Login should work with the second code
+        self.assertEqual(1, self.user.userauthtoken.counter)
+        user_or_none = authenticate(
+            username="user", password="secret", token=codes[1])
+        self.assertEqual(self.user, user_or_none)
