@@ -1,5 +1,6 @@
 from binascii import hexlify
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from oath import totp
@@ -7,9 +8,25 @@ from .models import UserAuthToken
 from .util import encrypt_value
 
 
-class TotpTests(TestCase):
-    # TODO: mock time / test drifts...
+TWOFACTOR_SETTINGS = {
+    "AUTHENTICATION_BACKENDS": (
+        'django_twofactor.auth_backends.TwoFactorAuthBackend',
+    ),
+    "SECRET_KEY": "sekrit",
+    "TWOFACTOR_TOTP_OPTIONS":  {
+            "period": 30,
+            "default_token_type": "dec6",
+            # Specify drifts for the unlucky scenario where the period ends after
+            # the correct seed is calculated but before authenticate is called
+            "forward_drift": 2,
+            "backward_drift": 2,
+    },
+    "TWOFACTOR_ENCRYPTION_KEY": ""
+}
 
+
+@override_settings(**TWOFACTOR_SETTINGS)
+class TotpTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username="user", password="secret")
@@ -52,6 +69,7 @@ class TotpTests(TestCase):
         self.assert_(user_or_none is None)
 
 
+@override_settings(**TWOFACTOR_SETTINGS)
 class HotpTests(TestCase):
     codes = ["477324", "532070", "160761"]  # hotp(hexlify("s33d"), i)
 
