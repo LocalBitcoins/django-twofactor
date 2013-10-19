@@ -101,18 +101,18 @@ class HotpTests(TestCase):
         self.assertEqual(1, self.auth_token.counter)
 
 
-
 @override_settings(**TWOFACTOR_SETTINGS)
 class GridCardActivationFormTests(TestCase):
+    codes = ["131779", "404121", "756246"]
+
     def setUp(self):
         self.user = User.objects.create_user(
             username="user", password="secret")
 
     def test_grid_card_activation(self):
-        codes = ["131779", "404121", "756246"]
         data = {
-            "key": "brzguxg3uw7",
-            "first_code": codes[0],
+            "key": "brzguxg3uw5",
+            "first_code": self.codes[0],
         }
 
         form = GridCardActivationForm(self.user, data)
@@ -126,5 +126,15 @@ class GridCardActivationFormTests(TestCase):
         # Login should work with the second code
         self.assertEqual(1, self.user.userauthtoken.counter)
         user_or_none = authenticate(
-            username="user", password="secret", token=codes[1])
+            username="user", password="secret", token=self.codes[1])
         self.assertEqual(self.user, user_or_none)
+
+    def test_invalid_checksum(self):
+        data = {
+            "key": "brzguxg3uw6",
+            "first_code": self.codes[0],
+        }
+
+        form = GridCardActivationForm(self.user, data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("Invalid key", form.errors["key"])

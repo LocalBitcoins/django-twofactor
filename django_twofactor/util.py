@@ -123,3 +123,16 @@ def key_to_seed(key_with_checksum):
     # delimiter, and the seed should thus not contain it
     seed = seed.replace("\x00", "0")
     return seed
+
+def verify_checksum(key_with_checksum):
+    """
+    Verify that the checksum at a key's end matches the key.
+
+    >>> verify_checksum('brzguxg3uw7')
+    True
+    >>> verify_checksum('arzguxg3uw7')
+    False
+    """
+    main = key_with_checksum[:-CHECKSUM_LENGTH]
+    checksum = key_with_checksum[-CHECKSUM_LENGTH:]
+    return md5(main).hexdigest()[:CHECKSUM_LENGTH] == checksum

@@ -53,6 +53,12 @@ class GridCardActivationForm(forms.Form):
         self.user = user
         super(GridCardActivationForm, self).__init__(*args, **kwargs)
 
+    def clean_key(self):
+        key = self.cleaned_data["key"]
+        if not util.verify_checksum(key):
+            raise forms.ValidationError("Invalid key")
+        return key
+
     def save(self):
         try:
             token = UserAuthToken.objects.get(user=self.user)
@@ -63,5 +69,6 @@ class GridCardActivationForm(forms.Form):
         seed = util.key_to_seed(base36_with_checksum)
         token.type = UserAuthToken.TYPE_HOTP
         token.reset_seed(seed)
+        # Start at the second code
         token.counter = 1
         token.save()
