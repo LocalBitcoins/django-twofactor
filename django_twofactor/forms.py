@@ -59,6 +59,19 @@ class GridCardActivationForm(forms.Form):
             raise forms.ValidationError("Invalid key")
         return key
 
+    def clean(self):
+        """Test that the first code is correct"""
+        data = super(GridCardActivationForm, self).clean()
+        key = data.get("key")
+        first_code = data.get("first_code")
+        if not (key and first_code):
+            return data
+        seed = util.key_to_seed(key)
+        if first_code != util.get_hotp(seed, 0):
+            self._errors["first_code"] = self.error_class(["Invalid first code"])
+            del data["first_code"]
+        return data
+
     def save(self):
         try:
             token = UserAuthToken.objects.get(user=self.user)

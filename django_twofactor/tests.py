@@ -138,3 +138,13 @@ class GridCardActivationFormTests(TestCase):
         form = GridCardActivationForm(self.user, data)
         self.assertFalse(form.is_valid())
         self.assertIn("Invalid key", form.errors["key"])
+
+    def test_invalid_first_code(self):
+        data = {
+            "key": "brzguxg3uw5",
+            "first_code": "123456",
+        }
+
+        form = GridCardActivationForm(self.user, data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("Invalid first code", form.errors["first_code"])
