@@ -56,7 +56,7 @@ class GridCardActivationForm(forms.Form):
     def clean_key(self):
         """Lowercase the key and check that it matches its checksum"""
         key = self.cleaned_data["key"].lower()
-        if not util.verify_checksum(key):
+        if not util.verify_checksum(key) or len(key) < 11:
             raise forms.ValidationError("Invalid key")
         return key
 
