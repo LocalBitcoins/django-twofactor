@@ -1,6 +1,7 @@
 from base64 import b32encode
 from binascii import hexlify
 from hashlib import sha256, md5
+import string
 from urllib import urlencode
 from django_twofactor.encutil import encrypt, decrypt, _gen_salt
 from oath import accept_hotp, accept_totp, hotp
@@ -139,3 +140,19 @@ def verify_checksum(key_with_checksum):
     main = key_with_checksum[:-CHECKSUM_LENGTH]
     checksum = key_with_checksum[-CHECKSUM_LENGTH:]
     return md5(main).hexdigest()[:CHECKSUM_LENGTH] == checksum
+
+def random_base36_with_checksum(length=10):
+    """
+    Return a random base36 string with a checksum at its end
+    """
+    alphabet = string.digits + string.ascii_lowercase
+    base36 = "".join([random.choice(alphabet) for _ in range(length)])
+    checksum = md5(base36).hexdigest()[:CHECKSUM_LENGTH].lower()
+    return "%s%s" % (base36, checksum)
+
+def list_codes(raw_seed, n=100):
+    """
+    Get a generator over `n` first HOTP codes.
+    """
+    for i in range(n):
+        yield get_hotp(raw_seed, i)
