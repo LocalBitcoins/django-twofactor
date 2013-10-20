@@ -93,17 +93,20 @@ def get_hotp(raw_seed, counter, token_type=None):
         token_type,
     )
 
-def get_google_url(raw_seed, hostname=None):
+def get_google_url(raw_seed, hostname=None, type="totp"):
     # Note: Google uses base32 for it's encoding rather than hex.
     b32secret = b32encode( raw_seed )
     if not hostname:
         from socket import gethostname
         hostname = gethostname()
-    
-    data = "otpauth://totp/%(hostname)s?secret=%(secret)s" % {
+
+    data = "otpauth://%(type)s/%(hostname)s?secret=%(secret)s" % {
+        "type":type,
         "hostname":hostname,
         "secret":b32secret,
     }
+    if type == "hotp":
+        data += "&counter=-1"
     url = "https://chart.googleapis.com/chart?" + urlencode({
         "chs":"200x200",
         "chld":"M|0",

@@ -16,8 +16,8 @@ class UserAuthToken(models.Model):
     TYPE_TOTP = 1
     TYPE_HOTP = 2
     TYPE_CHOICES = (
-        (TYPE_TOTP, "Google authenticator"),
-        (TYPE_HOTP, "Grid card"),
+        (TYPE_TOTP, "Time based (TOTP)"),
+        (TYPE_HOTP, "Counter based (HOTP)"),
     )
 
     user = models.OneToOneField("auth.User")
@@ -93,13 +93,6 @@ class UserAuthToken(models.Model):
 
         return get_google_url(
             decrypt_value(self.encrypted_seed),
-            name
+            name,
+            "hotp" if self.is_hotp() else "totp"
         )
-
-    def list_codes(self):
-        """
-        Get a generator over 100 first HOTP codes.
-        """
-        seed = decrypt_value(self.encrypted_seed)
-        for i in range(100):
-            yield get_hotp(seed, i)
