@@ -6,19 +6,18 @@
 </h1>
 
 {% with token=user.userauthtoken %}
-    {% if token.is_totp %}
     <p>
     Please scan the following QR code into your authentication device or manually enter the information below:
     </p>
     <p><img src="{{ token.google_url }}"/></p>
     <ul>
+        {% if token.is_totp %}
         <li><b>Auth type</b>: Time Based (TOTP)</li>
+        {% elif token.is_hotp %}
+        <li><b>Auth type</b>: Counter Based (rOTP)</li>
+        {% endif %}
         <li><b>Account</b>: {{ user.username }}</li>
         <li><b>Key</b>: {{ token.b32_secret }}</li>
     </ul>
-    {% elif token.is_hotp %}
-    <p>Please print out the following grid card:</p>
-    {% include "twofactor/hotp_grid.html" %}
-    {% endif %}
 {% endwith %}
 {% endblock %}

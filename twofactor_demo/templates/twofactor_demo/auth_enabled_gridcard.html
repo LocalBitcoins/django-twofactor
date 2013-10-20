@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="page-header">
+    Two-factor authentication enabled
+</h1>
+
+{% with token=user.userauthtoken %}
+    <p>
+    Two-factor authentication enabled. Use the <strong>second</strong> number
+    from your grid card when logging in next time.
+    </p>
+{% endwith %}
+{% endblock %}

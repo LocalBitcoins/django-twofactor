@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block content %}
 <h1 class="page-header">
@@ -9,6 +10,42 @@
 Two-factor authentication is <strong>{{ user.userauthtoken|yesno:"enabled,disabled" }}</strong>.
 </p>
 
+<div class="row-fluid">
+    <form method="post" action="." class="well form-horizontal">
+        <legend>Activate a grid card
+            <small>(Generate grid cards <a href="{% url "generate-gridcard" %}">here</a>)</small>
+        </legend>
+        {% csrf_token %}
+
+        {% for error in gridcard_form.nonfield_errors %}
+        <p class="alert alert-error">
+            {{ error }}
+        </p>
+        {% endfor %}
+
+        {% for field in gridcard_form %}
+        <div class="control-group {% if field.errors %}error{% endif %}">
+            <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+            <div class="controls">
+                {{ field }}
+                {% for error in field.errors %}
+                <span class="help-inline">{{ error }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="control-group">
+            <div class="controls">
+                <button class="btn btn-primary" type="submit">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p class="alert">Older stuff below</p>
 {% if user.userauthtoken %}
 <div class="row-fluid">
     <form method="post" action="." class="well span6">
