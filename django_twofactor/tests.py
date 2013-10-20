@@ -114,7 +114,16 @@ class GridCardActivationFormTests(TestCase):
             "key": "brzguxg3uw5",
             "first_code": self.codes[0],
         }
+        self._test_activation(data)
 
+    def test_uppercase_is_fine_too(self):
+        data = {
+            "key": "BRZGUXG3UW5",
+            "first_code": self.codes[0],
+        }
+        self._test_activation(data)
+
+    def _test_activation(self, data):
         form = GridCardActivationForm(self.user, data)
         self.assertTrue(form.is_valid())
         form.save()
