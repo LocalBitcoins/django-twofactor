@@ -7,6 +7,22 @@
 {% if user.is_authenticated and user.is_active %}
     <h1 class="page-header">Logged in</h1>
 
+    {% if user.userauthtoken %}
+        {% if user.userauthtoken.counter >= 100 %}
+        <div class="alert alert-danger">
+            Your grid card has run out of authentication codes!
+            <a href="{% url "change-settings" %}">Generate and activate</a> a new
+            one <strong>now</strong>, or you can no longer log in!
+        </div>
+        {% elif user.userauthtoken.counter >= 80 %}
+        <div class="alert alert-danger">
+            Your grid card is running out of authentication codes.
+            <a href="{% url "change-settings" %}">Generate and activate</a> a new
+            one soon.
+        </div>
+        {% endif %}
+    {% endif %}
+
     <p>You are logged in as <b>{% firstof user.get_full_name user %}</b>. <a href="/logout/">Click here to log out</a>.</p>
     <p>
         Two-factor authentication is <strong>{{ user.userauthtoken|yesno:"enabled,disabled" }}</strong>.
