@@ -28,7 +28,7 @@ def _gen_salt(length=16):
 def _get_key(salt):
     """ Combines `settings.SECRET_KEY` with a salt. """
     if not salt: salt = ""
-    
+
     return sha256("%s%s" % (settings.SECRET_KEY, salt)).digest()
 
 def encrypt(data, salt):

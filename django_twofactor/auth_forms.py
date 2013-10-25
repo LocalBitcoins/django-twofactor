@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 
 ERROR_MESSAGE = _("Please enter the correct username, password and "
     "authentication code (if applicable). Note that all fields are "
@@ -27,6 +28,16 @@ class TwoFactorAuthenticationForm(AuthenticationForm):
         # TODO: take into account the format in settings (6 is only valid for
         # dec6)
         token = str(token).zfill(6)
+
+        # Allow login with email
+        try:
+            u = User.objects.get(username=username)
+        except User.DoesNotExist:
+            try:
+                u = User.objects.get(email=username)
+                username = u.username
+            except User.DoesNotExist:
+                pass
 
         if username and password:
             self.user_cache = authenticate(username=username, password=password, token=token)

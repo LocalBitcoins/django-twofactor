@@ -65,7 +65,7 @@
   <div class="form-row">
     {% if not form.this_is_the_login_form.errors %}{{ form.token.errors }}{% endif %}
     <label for="id_token">{% trans 'Auth Code' %}[<a href="#" id="token_info">?<span>{{ form.token.help_text }}</span></a>]:</label> {{ form.token }}<br />
-    
+
   </div>
   <div class="submit-row">
     <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}" />

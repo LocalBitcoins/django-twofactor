@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django_twofactor.util import (
     check_raw_seed,
@@ -46,7 +47,14 @@ class UserAuthToken(models.Model):
         Checks whether `auth_code` is a valid authentication code for this
         user, at the current time. (TOTP)
         """
-        return check_raw_seed(decrypt_value(self.encrypted_seed), auth_code)
+        # allow only one-time use for one auth code.
+        cache_key = "onetimeauth_"+str(self.user.id)+"_"+str(auth_code)
+        if cache.get(cache_key):  # has been successfully authenticated with this auth key within last 5 minutes
+            return False
+        result = check_raw_seed(decrypt_value(self.encrypted_seed), auth_code)
+        if result:
+            cache.set(cache_key, True, 60*5)
+        return result
 
     def _check_auth_code_hotp(self, auth_code):
         """
