@@ -5,7 +5,7 @@
 <div class="twofactor-grid">
     <p>
         <span class="key-title">{% trans "Key" %}</span>
-        <span class="key">{{ key }}</span>
+        <span class="key">{{ key|upper }}</span>
     </p>
     <ul>
         {% for code in codes %}
