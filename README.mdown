@@ -27,6 +27,9 @@ Some notes:
 [rfc4226]: http://tools.ietf.org/html/rfc4226
 [poc_link]: https://gist.github.com/445567d2206a82a4e684
 
+This project is partially sponsored by [Localbitcoins.com][localbitcoins.com]
+[localbitcoins.com]: https://localbitcoins.com
+
 ---
 
 ## Possible alternatives
