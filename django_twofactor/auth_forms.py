@@ -21,6 +21,12 @@ class TwoFactorAuthenticationForm(AuthenticationForm):
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
         token = self.cleaned_data.get('token')
+        # Leading zeros count for the token. The integer validation will strip
+        # them (but having field type = integer is useful), so we have to
+        # re-add them here.
+        # TODO: take into account the format in settings (6 is only valid for
+        # dec6)
+        token = str(token).zfill(6)
 
         if username and password:
             self.user_cache = authenticate(username=username, password=password, token=token)
@@ -32,28 +38,7 @@ class TwoFactorAuthenticationForm(AuthenticationForm):
         return self.cleaned_data
 
 
-class TwoFactorAdminAuthenticationForm(AuthenticationForm):
-    token = forms.IntegerField(label=_("Authentication Code"),
-        help_text="If you have enabled two-factor authentication, enter the "
-            "six-digit number from your authentication device here.",
-        widget=forms.TextInput(attrs={'maxlength':'6'}),
-        min_value=1, max_value=999999,
-        required=False
-    )
+class TwoFactorAdminAuthenticationForm(TwoFactorAuthenticationForm):
     this_is_the_login_form = forms.BooleanField(widget=forms.HiddenInput,
         initial=1,  error_messages={'required': _("Please log in again, "
             "because your session has expired.")})
-
-    def clean(self):
-        username = self.cleaned_data.get('username')
-        password = self.cleaned_data.get('password')
-        token = self.cleaned_data.get('token')
-
-        if username and password:
-            self.user_cache = authenticate(username=username, password=password, token=token)
-            if self.user_cache is None:
-                raise forms.ValidationError(ERROR_MESSAGE)
-            elif not self.user_cache.is_active:
-                raise forms.ValidationError(_("This account is inactive."))
-        self.check_for_test_cookie()
-        return self.cleaned_data

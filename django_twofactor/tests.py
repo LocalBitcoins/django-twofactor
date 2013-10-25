@@ -7,6 +7,7 @@ from oath import totp
 from .models import UserAuthToken
 from .util import encrypt_value
 from .forms import GridCardActivationForm
+from . import auth_forms
 
 
 TWOFACTOR_SETTINGS = {
@@ -167,3 +168,35 @@ class GridCardActivationFormTests(TestCase):
         form = GridCardActivationForm(self.user, data)
         self.assertFalse(form.is_valid())
         self.assertIn("Invalid first code", form.errors["first_code"])
+
+
+@override_settings(**TWOFACTOR_SETTINGS)
+class AuthFormTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="user", password="secret")
+        UserAuthToken.objects.create(
+            user=self.user,
+            type=UserAuthToken.TYPE_HOTP,
+            encrypted_seed=encrypt_value("a"),
+            counter=20)  # get_hotp("a", 20) = "022728"
+
+    def test_token_starting_with_zero_basic_form(self):
+        self._test_token_starting_with_zero(
+                auth_forms.TwoFactorAuthenticationForm)
+
+    def test_token_starting_with_zero_admin_form(self):
+        self._test_token_starting_with_zero(
+                auth_forms.TwoFactorAdminAuthenticationForm,
+                extra_data={"this_is_the_login_form": "1"})
+
+    def _test_token_starting_with_zero(self, form_cls, extra_data=None):
+        data = {
+            "username": "user",
+            "password": "secret",
+            "token": "022728",
+        }
+        if extra_data:
+            data.update(extra_data)
+        form = form_cls(data=data)
+        self.assertTrue(form.is_valid(), form.errors)
