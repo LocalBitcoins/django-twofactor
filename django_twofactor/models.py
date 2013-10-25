@@ -12,6 +12,9 @@ from base64 import b32encode
 from socket import gethostname
 
 
+HOTP_MAX_COUNTER = 100
+
+
 class UserAuthToken(models.Model):
     TYPE_TOTP = 1
     TYPE_HOTP = 2
@@ -55,6 +58,8 @@ class UserAuthToken(models.Model):
         if correct:
             self.counter += 1
             self.save()
+            if self.counter > HOTP_MAX_COUNTER:
+                self.delete()
         return correct
 
     def reset_seed(self, seed=None):

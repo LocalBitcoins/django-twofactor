@@ -23,7 +23,7 @@ TWOFACTOR_SETTINGS = {
             "forward_drift": 2,
             "backward_drift": 2,
     },
-    "TWOFACTOR_ENCRYPTION_KEY": ""
+    "TWOFACTOR_ENCRYPTION_KEY": "",
 }
 
 
@@ -200,3 +200,27 @@ class AuthFormTests(TestCase):
             data.update(extra_data)
         form = form_cls(data=data)
         self.assertTrue(form.is_valid(), form.errors)
+
+
+@override_settings(**TWOFACTOR_SETTINGS)
+class SignalsTests(TestCase):
+    def test_remove_hotp_token_after_100_logins(self):
+        user = User.objects.create_user(
+            username="user", password="secret")
+        UserAuthToken.objects.create(
+            user=user,
+            type=UserAuthToken.TYPE_HOTP,
+            encrypted_seed=encrypt_value("a"),
+            counter=99)
+
+        # Shouldn't be deleted on the 99th login
+        user_or_none = authenticate(
+                username="user", password="secret", token="012920")
+        self.assertEqual(user, user_or_none)
+        self.assertTrue(UserAuthToken.objects.filter(user=user).exists())
+
+        # Should be deleted on the 100th login
+        user_or_none = authenticate(
+                username="user", password="secret", token="482226")
+        self.assertEqual(user, user_or_none)
+        self.assertFalse(UserAuthToken.objects.filter(user=user).exists())
