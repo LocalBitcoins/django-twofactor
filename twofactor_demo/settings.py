@@ -164,3 +164,9 @@ TWOFACTOR_TOTP_OPTIONS = {
 # (NOTE: don't change this when running this demo)
 #TWOFACTOR_ENCRYPTION_KEY = '=S$\'d!Dj@jXv-A;tR5TjDaYh1+Ug;"\'ou\'`iOS4M#_+.buNjbG'
 TWOFACTOR_ENCRYPTION_KEY = ''
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
