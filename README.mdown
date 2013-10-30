@@ -24,6 +24,10 @@ Some notes:
   Password Algorithm
 * [A proof of concept regarding how to use **python-oath** with Google Authenticator][poc_link]
 
+* [HTML5 based TOTP test page](http://gauth.apps.gbraad.nl/)
+
+* [List of Google Authenticator compatible implementations](https://en.wikipedia.org/wiki/Google_Authenticator)
+
 [rfc4226]: http://tools.ietf.org/html/rfc4226
 [poc_link]: https://gist.github.com/445567d2206a82a4e684
 
