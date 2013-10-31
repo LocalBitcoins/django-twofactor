@@ -89,6 +89,21 @@ class GridCardActivationForm(forms.Form):
         token.save()
 
 
+def retrofit_token_field(fields, user_auth_token):
+    """ Include two-factor token field on any form.
+    """
+
+    fields["token"] = forms.CharField(label=_("Authentication code"),
+        widget=forms.TextInput(attrs={'maxlength':'6', 'autocomplete': 'off'}),
+        required=True)
+
+    if user_auth_token.type == UserAuthToken.TYPE_HOTP:
+        fields["token"].help_text = _(u"Enter the paper code number %(token_number)d from your printed two-factor code set here.") % dict(token_number=user_auth_token.counter+1)
+        #fields["token"].help_text = _(u"Enter the paper code number from your printed two-factor code set here. Mark your used codes.")
+    else:
+        fields["token"].help_text = _(u"Enter the six-digit number from your mobile app here.")
+
+
 class TwoFactorMixin(object):
     """ Mix-in form which adds mobile or paper based two-factor authentication token processing to any form.
 
@@ -117,15 +132,7 @@ class TwoFactorMixin(object):
             self.user_auth_token = None
 
         if self.user_auth_token:
-
-            self.fields["token"] = forms.CharField(label=_("Authentication code"),
-                widget=forms.TextInput(attrs={'maxlength':'6', 'autocomplete': 'off'}),
-                required=True)
-
-            if self.user_auth_token.type == UserAuthToken.TYPE_HOTP:
-                self.fields["token"].help_text = _(u"Enter the paper code number %(token_number)d from your printed two-factor code set here.") % dict(token_number=self.user_auth_token.counter+1)
-            else:
-                self.fields["token"].help_text = _(u"Enter the six-digit number from your mobile app here.")
+            retrofit_token_field(self.fields, self.user_auth_token)
 
     def clean_token(self):
         """ Make sure the user entered the token"""
