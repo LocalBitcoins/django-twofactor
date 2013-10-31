@@ -14,6 +14,9 @@ from socket import gethostname
 
 HOTP_MAX_COUNTER = 100
 
+def hex(s):
+    return ":".join("{0:x}".format(ord(c)) for c in s)
+
 
 class UserAuthToken(models.Model):
     TYPE_TOTP = 1

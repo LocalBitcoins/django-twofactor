@@ -70,6 +70,7 @@ def check_hotp(raw_seed, auth_code, counter, token_type=None):
     """
     if not token_type:
         token_type = DEFAULT_TOKEN_TYPE
+
     return accept_hotp(
         hexlify(raw_seed),
         auth_code,
@@ -122,6 +123,7 @@ def key_to_seed(key_with_checksum):
     at its end.
     """
     key = key_with_checksum[:-CHECKSUM_LENGTH]
+    key = key.lower()
     seed = sha256(key + settings.SECRET_KEY).digest()
     # encutil.encrypt and encutil.decrypt use the null character as padding
     # delimiter, and the seed should thus not contain it
