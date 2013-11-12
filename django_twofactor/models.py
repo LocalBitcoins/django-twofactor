@@ -58,10 +58,11 @@ class UserAuthToken(models.Model):
         """
         correct = check_hotp(
             decrypt_value(self.encrypted_seed), auth_code, self.counter)
+
         if correct:
             self.counter += 1
             self.save()
-            if self.counter > HOTP_MAX_COUNTER:
+            if self.counter >= HOTP_MAX_COUNTER:
                 self.delete()
         return correct
 

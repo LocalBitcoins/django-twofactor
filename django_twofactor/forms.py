@@ -154,3 +154,16 @@ class TwoFactorMixin(object):
                 raise forms.ValidationError(_(u"This doesn't seem to match with the code on the paper. Please try again."))
             else:
                 raise forms.ValidationError(_(u"The code does not match. Make sure your mobile phone has correct time. You can synchronize the time in Authenticator app settings."))
+
+
+class GridCardReactivationForm(TwoFactorMixin, GridCardActivationForm):
+    """ Activate your next grid card. """
+
+    def __init__(self, user, *args, **kwargs):
+        GridCardActivationForm.__init__(self, user, *args, **kwargs)
+        TwoFactorMixin.__init__(self, user)
+
+        self.fields["key"].label = _(u"Key from the new paper")
+        self.fields["first_code"].label = _(u"First code from the new paper")
+        self.fields["token"].label = _(u"Authentication code from the current paper")
+
