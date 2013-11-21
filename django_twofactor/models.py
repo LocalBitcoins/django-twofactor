@@ -1,4 +1,11 @@
+import logging
+
+from base64 import b32encode
+from socket import gethostname
+
 from django.db import models
+from django.core.cache import cache
+
 from django_twofactor.util import (
     check_raw_seed,
     check_hotp,
@@ -8,11 +15,13 @@ from django_twofactor.util import (
     get_google_url,
     random_seed,
 )
-from base64 import b32encode
-from socket import gethostname
+
 
 
 HOTP_MAX_COUNTER = 100
+
+
+logger = logging.getLogger(__name__)
 
 def hex(s):
     return ":".join("{0:x}".format(ord(c)) for c in s)
@@ -39,6 +48,7 @@ class UserAuthToken(models.Model):
         verbose_name="last updated", auto_now=True)
 
     def check_auth_code(self, auth_code):
+
         if self.type == self.TYPE_TOTP:
             return self._check_auth_code_totp(auth_code)
         else:
@@ -49,6 +59,16 @@ class UserAuthToken(models.Model):
         Checks whether `auth_code` is a valid authentication code for this
         user, at the current time. (TOTP)
         """
+
+        # Do not allow the same time-based two-factor code to be used within 40 seconds
+        lock_key = "two-factor-lock-%s-%s" % (self.user.username, auth_code)
+        lock = cache.get(lock_key)
+        if lock:
+            logger.warn("Two-factor duplicate authentication attempt %s", self.user.username)
+            return False
+
+        cache.set(lock_key, 40)
+
         return check_raw_seed(decrypt_value(self.encrypted_seed), auth_code)
 
     def _check_auth_code_hotp(self, auth_code):
