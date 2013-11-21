@@ -12,7 +12,10 @@ class TwoFactorAuthAdminSite(AdminSite):
     password_change_template = "twofactor_admin/registration/password_change_form.html"
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
+        try:
+            from django.conf.urls import patterns, url
+        except ImportError:
+            from django.conf.urls.defaults import patterns, url
 
         urlpatterns = patterns('django_twofactor.admin_views',
             url(r'^twofactor_auth_setup/$',
