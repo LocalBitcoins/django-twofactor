@@ -68,7 +68,10 @@ class GridCardActivationForm(forms.Form):
         first_code = data.get("first_code")
         if not (key and first_code):
             return data
-        seed = util.key_to_seed(key)
+        try:
+            seed = util.key_to_seed(key)
+        except ValueError:
+            raise forms.ValidationError("Invalid key")
         if first_code != util.get_hotp(seed, 0):
             self._errors["first_code"] = self.error_class(["Invalid first code"])
             del data["first_code"]

@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.core.cache import cache
 from .util import key_to_seed, random_base36_with_checksum, list_codes
 
 
-GRIDCARD_CACHE_KEY = "twofactor-gridcard-{0}"
-GRIDCARD_CACHE_TIME = 10 * 60
+GRIDCARD_CACHE_KEY = getattr(
+    settings, "TWOFACTOR_GRIDCARD_CACHE_KEY", "twofactor-gridcard-{0}")
+GRIDCARD_CACHE_TIME = getattr(
+    settings, "TWOFACTOR_GRIDCARD_CACHE_TIME", 24 * 60 * 60)
 
 
 @never_cache

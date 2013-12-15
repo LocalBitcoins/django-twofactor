@@ -204,23 +204,27 @@ class AuthFormTests(TestCase):
 
 @override_settings(**TWOFACTOR_SETTINGS)
 class SignalsTests(TestCase):
-    def test_remove_hotp_token_after_100_logins(self):
+    def test_remove_hotp_token_after_max_logins(self):
+        from .models import HOTP_MAX_COUNTER
+        from .util import get_hotp
         user = User.objects.create_user(
             username="user", password="secret")
         UserAuthToken.objects.create(
             user=user,
             type=UserAuthToken.TYPE_HOTP,
             encrypted_seed=encrypt_value("a"),
-            counter=99)
+            counter=(HOTP_MAX_COUNTER - 2))
+        correct_token_1 = get_hotp("a", HOTP_MAX_COUNTER - 2)
+        correct_token_2 = get_hotp("a", HOTP_MAX_COUNTER - 1)
 
-        # Shouldn't be deleted on the 99th login
+        # Shouldn't be deleted
         user_or_none = authenticate(
-                username="user", password="secret", token="012920")
+                username="user", password="secret", token=correct_token_1)
         self.assertEqual(user, user_or_none)
         self.assertTrue(UserAuthToken.objects.filter(user=user).exists())
 
-        # Should be deleted on the 100th login
+        # Should be deleted
         user_or_none = authenticate(
-                username="user", password="secret", token="482226")
+                username="user", password="secret", token=correct_token_2)
         self.assertEqual(user, user_or_none)
         self.assertFalse(UserAuthToken.objects.filter(user=user).exists())

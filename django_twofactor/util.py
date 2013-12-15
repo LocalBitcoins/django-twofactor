@@ -122,8 +122,10 @@ def key_to_seed(key_with_checksum):
     Get a seed that can be used with UserAuthToken from a key with a checksum
     at its end.
     """
+    key_with_checksum = key_with_checksum.lower()
+    if not verify_checksum(key_with_checksum):
+        raise ValueError("Checksum of {0} doesn't match".format(key_with_checksum))
     key = key_with_checksum[:-CHECKSUM_LENGTH]
-    key = key.lower()
     seed = sha256(key + settings.SECRET_KEY).digest()
     # encutil.encrypt and encutil.decrypt use the null character as padding
     # delimiter, and the seed should thus not contain it
@@ -139,6 +141,7 @@ def verify_checksum(key_with_checksum):
     >>> verify_checksum('arzguxg3uw7')
     False
     """
+    key_with_checksum = key_with_checksum.lower()
     main = key_with_checksum[:-CHECKSUM_LENGTH]
     checksum = key_with_checksum[-CHECKSUM_LENGTH:]
     return md5(main).hexdigest()[:CHECKSUM_LENGTH] == checksum
