@@ -34,6 +34,7 @@ DEFAULT_TOKEN_TYPE = TOTP_OPTIONS.get('default_token_type', "dec6")
 ENCRYPTION_KEY = getattr(settings, "TWOFACTOR_ENCRYPTION_KEY", "")
 
 CHECKSUM_LENGTH = 1
+HOTP_MAX_COUNTER = getattr(settings, "HOTP_MAX_COUNTER", 100)
 
 def random_seed(rawsize=10):
     """ Generates a random seed as a raw byte string. """
@@ -155,7 +156,8 @@ def random_base36_with_checksum(length=10):
     checksum = md5(base36).hexdigest()[:CHECKSUM_LENGTH].lower()
     return "%s%s" % (base36, checksum)
 
-def list_codes(raw_seed, n=100):
+
+def list_codes(raw_seed, n=HOTP_MAX_COUNTER):
     """
     Get a generator over `n` first HOTP codes.
     """

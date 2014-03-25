@@ -5,6 +5,7 @@ from socket import gethostname
 
 from django.db import models
 from django.core.cache import cache
+from django.conf import settings
 
 from django_twofactor.util import (
     check_raw_seed,
@@ -18,7 +19,7 @@ from django_twofactor.util import (
 
 
 
-HOTP_MAX_COUNTER = 100
+HOTP_MAX_COUNTER = getattr(settings, "HOTP_MAX_COUNTER", 100)
 
 
 logger = logging.getLogger(__name__)
