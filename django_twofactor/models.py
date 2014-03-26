@@ -126,3 +126,16 @@ class UserAuthToken(models.Model):
             name,
             "hotp" if self.is_hotp() else "totp"
         )
+
+    def get_last_hotp_token_warning(self, limit=5):
+        """ Are we running low on HOTP tokens.
+
+        :param limit: Number of tokens left on the gridcard when we start displaying the warning.
+
+        Return total available tokensfor this user or 0.
+        """
+        if self.type == UserAuthToken.TYPE_HOTP:
+            if self.counter >= HOTP_MAX_COUNTER - limit:
+                return HOTP_MAX_COUNTER
+
+        return 0
