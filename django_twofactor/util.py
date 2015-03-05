@@ -56,8 +56,8 @@ def check_raw_seed(raw_seed, auth_code, token_type=None):
     if not token_type:
         token_type = DEFAULT_TOKEN_TYPE
     return accept_totp(
-        auth_code,
         hexlify(raw_seed),
+        auth_code,
         token_type,
         period=PERIOD,
         forward_drift=FORWARD_DRIFT,
