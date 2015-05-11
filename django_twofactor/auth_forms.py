@@ -5,12 +5,6 @@ from django.contrib.auth import authenticate
 
 from django_twofactor.models import UserAuthToken
 
-try:
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-except ImportError:
-    from django.contrib.auth.models import User
-
 
 ERROR_MESSAGE = _("Please enter the correct username, password and "
     "authentication code (if applicable). Note that all fields are "
@@ -29,6 +23,12 @@ class TwoFactorAuthenticationForm(AuthenticationForm):
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
         token = self.cleaned_data.get('token')
+
+        try:
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+        except ImportError:
+            from django.contrib.auth.models import User
 
         # Allow login with email
         try:
