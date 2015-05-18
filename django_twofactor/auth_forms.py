@@ -46,7 +46,6 @@ class TwoFactorAuthenticationForm(AuthenticationForm):
                 raise forms.ValidationError(ERROR_MESSAGE)
             elif not self.user_cache.is_active:
                 raise forms.ValidationError(_("This account is inactive."))
-        self.check_for_test_cookie()
         return self.cleaned_data
 
 
