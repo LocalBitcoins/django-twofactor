@@ -50,6 +50,9 @@ class UserAuthToken(models.Model):
 
     def check_auth_code(self, auth_code):
 
+        if not auth_code or not auth_code.isdigit():
+            return False
+
         if self.type == self.TYPE_TOTP:
             return self._check_auth_code_totp(auth_code)
         else:
