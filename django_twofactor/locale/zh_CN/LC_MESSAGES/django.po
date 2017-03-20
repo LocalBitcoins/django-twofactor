@@ -1,0 +1,205 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: localbitcoins\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-15 10:10+0200\n"
+"PO-Revision-Date: 2017-03-20 05:35-0400\n"
+"Last-Translator: kangasbros <jeremias.kangas@gmail.com>\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: localbitcoins\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: two_factor.po\n"
+
+#: auth_forms.py:9
+msgid "Please enter the correct username, password and authentication code (if applicable). Note that all fields are case-sensitive."
+msgstr "请输入正确的用户名、 密码和身份验证代码 （如果有）。请注意所有字段都是区分大小写的。"
+
+#: auth_forms.py:16
+msgid "Authentication Code"
+msgstr "身份验证代码"
+
+#: auth_forms.py:48
+msgid "This account is inactive."
+msgstr "此帐户处于冻结状态。"
+
+#: auth_forms.py:58 forms.py:99
+msgid "Authentication code"
+msgstr "身份验证代码"
+
+#: auth_forms.py:73
+#, python-format
+msgid "Enter the paper code number %(token_number)d from your two-factor code ticket here."
+msgstr "在此处输入您的双重身份验证码票中的纸质代码号 %(token_number)d。"
+
+#: auth_forms.py:75 forms.py:107
+msgid "Enter the six-digit number from your mobile app here."
+msgstr "在此处输入您移动应用中的 6 位数字。"
+
+#: auth_forms.py:85 forms.py:157
+msgid "This doesn't seem to match with the code on the paper. Please try again."
+msgstr "和纸上的代码不匹配。请再试一次。"
+
+#: auth_forms.py:87 forms.py:159
+msgid "The code does not match. Make sure your mobile phone has correct time. You can synchronize the time in Authenticator app settings."
+msgstr "代码不匹配。请确保您移动电话里的时间正确。您可以在身份验证应用的设置中同步时间。"
+
+#: auth_forms.py:93
+msgid "Please log in again, because your session has expired."
+msgstr "请重新登录，因为您的会话已过期。"
+
+#: forms.py:104
+#, python-format
+msgid "Enter the paper code number %(token_number)d from your printed two-factor code set here."
+msgstr "在此处输入您打印的双重身份验证码集中的纸质代码号 %(token_number)d。"
+
+#: forms.py:150
+msgid "Token must contain only digits 0-9."
+msgstr "口令只能包含0-9的数字。"
+
+#: forms.py:153
+msgid "Token must be six digits long."
+msgstr "口令必须是六位数字"
+
+#: forms.py:169
+msgid "Key from the new paper"
+msgstr "新纸上的密钥"
+
+#: forms.py:170
+msgid "First code from the new paper"
+msgstr "新纸上的第一个代码"
+
+#: forms.py:171
+msgid "Authentication code from the current paper"
+msgstr "当前纸上的身份验证代码"
+
+#: templates/twofactor/gridcard.html:7
+msgid "Key"
+msgstr "密钥"
+
+#: templates/twofactor_admin/_userlinks.html:5
+msgid "Documentation"
+msgstr "文档"
+
+#: templates/twofactor_admin/_userlinks.html:7
+#: templates/twofactor_admin/registration/twofactor_config.html:6
+#: templates/twofactor_admin/registration/twofactor_config.html:8
+#: templates/twofactor_admin/registration/twofactor_config.html:18
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:6
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:8
+#: templates/twofactor_admin/registration/twofactor_config_done.html:8
+#: templates/twofactor_admin/registration/twofactor_config_done.html:10
+msgid "Two-factor authentication"
+msgstr "双重身份验证"
+
+#: templates/twofactor_admin/_userlinks.html:8
+msgid "Change password"
+msgstr "更改密码"
+
+#: templates/twofactor_admin/_userlinks.html:9
+msgid "Log out"
+msgstr "登出"
+
+#: templates/twofactor_admin/base_site.html:4
+msgid "Django site admin"
+msgstr "Django 网站管理员"
+
+#: templates/twofactor_admin/base_site.html:7
+msgid "Django administration"
+msgstr "Django 管理"
+
+#: templates/twofactor_admin/twofactor_login.html:40
+#: templates/twofactor_admin/registration/password_change_form.html:16
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "请更正下面的错误。"
+
+#: templates/twofactor_admin/twofactor_login.html:56
+msgid "Username:"
+msgstr "用户名："
+
+#: templates/twofactor_admin/twofactor_login.html:60
+msgid "Password:"
+msgstr "密码："
+
+#: templates/twofactor_admin/twofactor_login.html:67
+msgid "Auth Code"
+msgstr "身份验证码"
+
+#: templates/twofactor_admin/twofactor_login.html:71
+msgid "Log in"
+msgstr "登录"
+
+#: templates/twofactor_admin/registration/password_change_form.html:6
+#: templates/twofactor_admin/registration/twofactor_config.html:6
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:6
+#: templates/twofactor_admin/registration/twofactor_config_done.html:8
+msgid "Home"
+msgstr "首页"
+
+#: templates/twofactor_admin/registration/password_change_form.html:6
+#: templates/twofactor_admin/registration/password_change_form.html:8
+#: templates/twofactor_admin/registration/password_change_form.html:20
+msgid "Password change"
+msgstr "密码更改"
+
+#: templates/twofactor_admin/registration/password_change_form.html:22
+msgid "Please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly."
+msgstr "为了安全起见，请输入您的旧密码，然后输入您的新密码两次，这样我们就能验证您输入得是否正确。"
+
+#: templates/twofactor_admin/registration/password_change_form.html:28
+msgid "Old password"
+msgstr "旧密码"
+
+#: templates/twofactor_admin/registration/password_change_form.html:33
+msgid "New password"
+msgstr "新密码"
+
+#: templates/twofactor_admin/registration/password_change_form.html:38
+msgid "Password (again)"
+msgstr "密码（再次输入）"
+
+#: templates/twofactor_admin/registration/password_change_form.html:44
+msgid "Change my password"
+msgstr "更改我的密码"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:21
+msgid "Two-factor authentication is <b>enabled</b> for this account. If you wish to reset your authentication token (to move to a new authenticating device) or disable two-factor authentication altogether, please confirm below:"
+msgstr "已为此帐户<b>启用</b>双重身份验证。如果您想要重置身份验证令牌（移动到新身份验证设备）或完全禁用双重身份验证，请确认以下内容："
+
+#: templates/twofactor_admin/registration/twofactor_config.html:23
+msgid "Two-factor authentication is <b>disabled</b> for this account. If you wish enable authentication, please confirm below:"
+msgstr "已为此帐户<b>禁用</b>双重身份验证。如果您想要启用身份验证，请确认以下内容："
+
+#: templates/twofactor_admin/registration/twofactor_config.html:27
+#: templates/twofactor_admin/registration/twofactor_config.html:35
+msgid "Reset authentication"
+msgstr "重置身份验证"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:27
+#: templates/twofactor_admin/registration/twofactor_config.html:35
+msgid "Enable authentication"
+msgstr "启用身份验证"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:47
+#: templates/twofactor_admin/registration/twofactor_config.html:65
+msgid "Submit"
+msgstr "提交"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:59
+msgid "Disable authentication"
+msgstr "禁用身份验证"
+
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:11
+msgid "Two-factor authentication disabled"
+msgstr "双重身份验证已禁用"
+
+#: templates/twofactor_admin/registration/twofactor_config_done.html:14
+msgid "Two-factor authentication enabled"
+msgstr "双重身份验证已启用"
+
