@@ -107,7 +107,7 @@ msgstr "Esci"
 
 #: templates/twofactor_admin/base_site.html:4
 msgid "Django site admin"
-msgstr "Amministratore sito Django\n"
+msgstr "Amministratore sito Django"
 
 #: templates/twofactor_admin/base_site.html:7
 msgid "Django administration"
