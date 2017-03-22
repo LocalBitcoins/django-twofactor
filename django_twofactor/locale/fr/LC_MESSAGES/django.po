@@ -1,0 +1,206 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: localbitcoins\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-15 10:10+0200\n"
+"PO-Revision-Date: 2017-03-20 05:31-0400\n"
+"Last-Translator: kangasbros <jeremias.kangas@gmail.com>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: localbitcoins\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: two_factor.po\n"
+
+#: auth_forms.py:9
+msgid "Please enter the correct username, password and authentication code (if applicable). Note that all fields are case-sensitive."
+msgstr "Veuillez saisir le nom d'utilisateur, le mot de passe, et (si activé) le code de double authentification corrects. Notez que tous les champs sont sensibles à la casse."
+
+#: auth_forms.py:16
+msgid "Authentication Code"
+msgstr "Code d'authentification"
+
+#: auth_forms.py:48
+msgid "This account is inactive."
+msgstr "Ce compte est inactif."
+
+#: auth_forms.py:58 forms.py:99
+msgid "Authentication code"
+msgstr "Code d'authentification"
+
+#: auth_forms.py:73
+#, python-format
+msgid "Enter the paper code number %(token_number)d from your two-factor code ticket here."
+msgstr "Entrez le numéro du code papier %(token_number)d de votre ticket de code de double authentification ici."
+
+#: auth_forms.py:75 forms.py:107
+msgid "Enter the six-digit number from your mobile app here."
+msgstr "Entrez le numéro à six chiffres de votre application mobile ici."
+
+#: auth_forms.py:85 forms.py:157
+msgid "This doesn't seem to match with the code on the paper. Please try again."
+msgstr "Cela ne semble pas correspondre au Code papier. Veuillez réessayer."
+
+#: auth_forms.py:87 forms.py:159
+msgid "The code does not match. Make sure your mobile phone has correct time. You can synchronize the time in Authenticator app settings."
+msgstr "Le code ne correspond pas. Vérifiez que l'heure est correctement réglée sur votre appareil mobile. Vous pouvez synchroniser l'heure dans les paramètres de l'appli d'authentification."
+
+#: auth_forms.py:93
+msgid "Please log in again, because your session has expired."
+msgstr "Veuillez vous reconnecter, car votre session a expiré."
+
+#: forms.py:104
+#, python-format
+msgid "Enter the paper code number %(token_number)d from your printed two-factor code set here."
+msgstr "Entrez le numéro du code papier %(token_number)d de votre ensemble imprimé de codes de double authentification ici."
+
+#: forms.py:150
+msgid "Token must contain only digits 0-9."
+msgstr "La clé (token) ne doit contenir que des chiffres (0-9)."
+
+#: forms.py:153
+msgid "Token must be six digits long."
+msgstr "La clé doit contenir six chiffres."
+
+#: forms.py:169
+msgid "Key from the new paper"
+msgstr "Clé de la nouvelle feuille"
+
+#: forms.py:170
+msgid "First code from the new paper"
+msgstr "Premier code de la nouvelle feuille"
+
+#: forms.py:171
+msgid "Authentication code from the current paper"
+msgstr "Code d’authentification de la feuille actuelle"
+
+#: templates/twofactor/gridcard.html:7
+msgid "Key"
+msgstr "Clé"
+
+#: templates/twofactor_admin/_userlinks.html:5
+msgid "Documentation"
+msgstr "Documentation"
+
+#: templates/twofactor_admin/_userlinks.html:7
+#: templates/twofactor_admin/registration/twofactor_config.html:6
+#: templates/twofactor_admin/registration/twofactor_config.html:8
+#: templates/twofactor_admin/registration/twofactor_config.html:18
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:6
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:8
+#: templates/twofactor_admin/registration/twofactor_config_done.html:8
+#: templates/twofactor_admin/registration/twofactor_config_done.html:10
+msgid "Two-factor authentication"
+msgstr "Double authentification"
+
+#: templates/twofactor_admin/_userlinks.html:8
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+#: templates/twofactor_admin/_userlinks.html:9
+msgid "Log out"
+msgstr "Fermer la session"
+
+#: templates/twofactor_admin/base_site.html:4
+msgid "Django site admin"
+msgstr "Administrateur du site Django"
+
+#: templates/twofactor_admin/base_site.html:7
+msgid "Django administration"
+msgstr "Administration Django"
+
+#: templates/twofactor_admin/twofactor_login.html:40
+#: templates/twofactor_admin/registration/password_change_form.html:16
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Corrigez s'il vous plaît l'erreur ci-dessous."
+msgstr[1] "Corrigez s'il vous plaît les erreurs ci-dessous."
+
+#: templates/twofactor_admin/twofactor_login.html:56
+msgid "Username:"
+msgstr "Nom d'utilisateur :"
+
+#: templates/twofactor_admin/twofactor_login.html:60
+msgid "Password:"
+msgstr "Mot de passe :"
+
+#: templates/twofactor_admin/twofactor_login.html:67
+msgid "Auth Code"
+msgstr "Code d'authentification"
+
+#: templates/twofactor_admin/twofactor_login.html:71
+msgid "Log in"
+msgstr "Se connecter"
+
+#: templates/twofactor_admin/registration/password_change_form.html:6
+#: templates/twofactor_admin/registration/twofactor_config.html:6
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:6
+#: templates/twofactor_admin/registration/twofactor_config_done.html:8
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/twofactor_admin/registration/password_change_form.html:6
+#: templates/twofactor_admin/registration/password_change_form.html:8
+#: templates/twofactor_admin/registration/password_change_form.html:20
+msgid "Password change"
+msgstr "Changement du mot de passe"
+
+#: templates/twofactor_admin/registration/password_change_form.html:22
+msgid "Please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly."
+msgstr "Veuillez entrer votre ancien mot de passe, pour des raisons de sécurité, et ensuite entrer votre nouveau mot de passe à deux reprises afin que nous puissions vérifier que vous l'avez saisi correctement."
+
+#: templates/twofactor_admin/registration/password_change_form.html:28
+msgid "Old password"
+msgstr "Ancien mot de passe"
+
+#: templates/twofactor_admin/registration/password_change_form.html:33
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: templates/twofactor_admin/registration/password_change_form.html:38
+msgid "Password (again)"
+msgstr "Mot de passe (confirmation)"
+
+#: templates/twofactor_admin/registration/password_change_form.html:44
+msgid "Change my password"
+msgstr "Modifier mon mot de passe"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:21
+msgid "Two-factor authentication is <b>enabled</b> for this account. If you wish to reset your authentication token (to move to a new authenticating device) or disable two-factor authentication altogether, please confirm below:"
+msgstr "La double authentification est <b>activée</b> pour ce compte. Si vous souhaitez réinitialiser votre jeton d’authentification (pour passer à un nouveau dispositif d’authentification) ou désactiver la double authentification, veuillez le confirmer ci-dessous :"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:23
+msgid "Two-factor authentication is <b>disabled</b> for this account. If you wish enable authentication, please confirm below:"
+msgstr "La double authentification est <b>désactivée</b> pour ce compte. Si vous souhaitez activer l’authentification, veuillez le confirmer ci-dessous :"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:27
+#: templates/twofactor_admin/registration/twofactor_config.html:35
+msgid "Reset authentication"
+msgstr "Réinitialiser l’authentification"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:27
+#: templates/twofactor_admin/registration/twofactor_config.html:35
+msgid "Enable authentication"
+msgstr "Activer l’authentification"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:47
+#: templates/twofactor_admin/registration/twofactor_config.html:65
+msgid "Submit"
+msgstr "Envoyer"
+
+#: templates/twofactor_admin/registration/twofactor_config.html:59
+msgid "Disable authentication"
+msgstr "Désactiver l’authentification"
+
+#: templates/twofactor_admin/registration/twofactor_config_disabled.html:11
+msgid "Two-factor authentication disabled"
+msgstr "Double authentification désactivée"
+
+#: templates/twofactor_admin/registration/twofactor_config_done.html:14
+msgid "Two-factor authentication enabled"
+msgstr "Double authentification activée"
+

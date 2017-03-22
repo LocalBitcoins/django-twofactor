@@ -20,5 +20,7 @@ setup(name='django_twofactor',
       url='https://github.com/LocalBitcoins/django-twofactor',
       license="MIT",
       packages=packages,
-      package_data=dict((package_name, template_patterns) for package_name in packages),
+      package_data={
+          package_name: template_patterns + ['locale/*/LC_MESSAGES/*.mo']
+      },
       )
