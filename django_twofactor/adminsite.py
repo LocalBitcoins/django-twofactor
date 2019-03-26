@@ -13,15 +13,15 @@ class TwoFactorAuthAdminSite(AdminSite):
 
     def get_urls(self):
         try:
-            from django.conf.urls import patterns, url
+            from django.conf.urls import url
         except ImportError:
-            from django.conf.urls.defaults import patterns, url
+            from django.conf.urls.defaults import url
 
-        urlpatterns = patterns('django_twofactor.admin_views',
+        urlpatterns = [
             url(r'^twofactor_auth_setup/$',
                 self.twofactor_config,
                 name="twofactor_config"),
-        )
+        ]
         urlpatterns += super(TwoFactorAuthAdminSite, self).get_urls()
 
         return urlpatterns
