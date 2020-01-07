@@ -1,4 +1,5 @@
 import logging
+import time
 
 from base64 import b32encode
 from socket import gethostname
@@ -20,6 +21,9 @@ from django_twofactor.util import (
 
 
 HOTP_MAX_COUNTER = getattr(settings, "HOTP_MAX_COUNTER", 100)
+
+HOTP_RATELIMIT_COUNT = getattr(settings, "HOTP_RATELIMIT_COUNT", 10)
+HOTP_RATELIMIT_TIMEFRAME = getattr(settings, "HOTP_RATELIMIT_TIMEFRAME", 600)
 
 
 logger = logging.getLogger(__name__)
@@ -80,6 +84,16 @@ class UserAuthToken(models.Model):
         Checks whether `auth_code` is a valid authentication code for this
         user, for the current iteration. (HOTP)
         """
+
+        # Do not allow too many retries. This is not perfectly atomic, but good enough.
+        ratelimit_key = "two-factor-ratelimit-%s-%s" % (self.user.username, self.counter)
+        times = cache.get(ratelimit_key) or []
+        times = [t for t in times if t + HOTP_RATELIMIT_TIMEFRAME > time.time()]
+        times.append(time.time())
+        cache.set(ratelimit_key, times, HOTP_RATELIMIT_TIMEFRAME)
+        if len(times) > HOTP_RATELIMIT_COUNT:
+            return False
+
         correct = check_hotp(
             decrypt_value(self.encrypted_seed), auth_code, self.counter)
 
