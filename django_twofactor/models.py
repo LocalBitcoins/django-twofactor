@@ -22,8 +22,8 @@ from django_twofactor.util import (
 
 HOTP_MAX_COUNTER = getattr(settings, "HOTP_MAX_COUNTER", 100)
 
-HOTP_RATELIMIT_COUNT = getattr(settings, "HOTP_RATELIMIT_COUNT", 10)
-HOTP_RATELIMIT_TIMEFRAME = getattr(settings, "HOTP_RATELIMIT_TIMEFRAME", 600)
+HOTP_RATELIMIT_COUNT = getattr(settings, "HOTP_RATELIMIT_COUNT", 30)
+HOTP_RATELIMIT_TIMEFRAME = getattr(settings, "HOTP_RATELIMIT_TIMEFRAME", 3600)
 
 
 logger = logging.getLogger(__name__)
