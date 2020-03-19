@@ -15,6 +15,8 @@ try:
 except ImportError:
     from django_twofactor import pyaes as AES
 
+BLOCK_SIZE = AES.block_size
+
 # Get best `random` implementation we can.
 import random
 try:
@@ -35,8 +37,8 @@ def encrypt(data, salt):
     cipher = AES.new(_get_key(salt), mode=AES.MODE_ECB)
     value = smart_str(data)
 
-    padding  = cipher.block_size - len(value) % cipher.block_size
-    if padding and padding < cipher.block_size:
+    padding  = BLOCK_SIZE - len(value) % BLOCK_SIZE
+    if padding and padding < BLOCK_SIZE:
         value += "\0" + ''.join([random.choice(string.printable) for index in range(padding-1)])
     return hexlify(cipher.encrypt(value))
 
