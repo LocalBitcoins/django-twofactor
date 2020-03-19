@@ -2,7 +2,10 @@ from base64 import b32encode
 from binascii import hexlify
 from hashlib import sha256, md5
 import string
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 from django_twofactor.encutil import encrypt, decrypt, _gen_salt
 from oath import accept_hotp, accept_totp, hotp
 from django.conf import settings
