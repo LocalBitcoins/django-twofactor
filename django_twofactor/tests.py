@@ -35,7 +35,7 @@ class TotpTests(TestCase):
         UserAuthToken.objects.create(
             user=self.user, encrypted_seed=encrypt_value("s33d"),
             type=UserAuthToken.TYPE_TOTP)
-        self.correct_code = totp(hexlify("s33d"))
+        self.correct_code = totp(hexlify("s33d").decode('ascii'))
 
     def test_basic_auth(self):
         """

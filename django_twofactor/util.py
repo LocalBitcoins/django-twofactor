@@ -9,6 +9,7 @@ except ImportError:
 from django_twofactor.encutil import encrypt, decrypt, _gen_salt
 from oath import accept_hotp, accept_totp, hotp
 from django.conf import settings
+from django.utils.encoding import force_bytes
 
 # Get best `random` implementation we can.
 import random
@@ -59,7 +60,7 @@ def check_raw_seed(raw_seed, auth_code, token_type=None):
     if not token_type:
         token_type = DEFAULT_TOKEN_TYPE
     return accept_totp(
-        hexlify(raw_seed),
+        hexlify(force_bytes(raw_seed)).decode('ascii'),
         auth_code,
         token_type,
         period=PERIOD,
@@ -76,7 +77,7 @@ def check_hotp(raw_seed, auth_code, counter, token_type=None):
         token_type = DEFAULT_TOKEN_TYPE
 
     return accept_hotp(
-        hexlify(raw_seed),
+        hexlify(force_bytes(raw_seed)).decode('ascii'),
         auth_code,
         counter,
         token_type,
@@ -94,7 +95,7 @@ def get_hotp(raw_seed, counter, token_type=None):
     if not token_type:
         token_type = DEFAULT_TOKEN_TYPE
     return hotp(
-        hexlify(raw_seed),
+        hexlify(force_bytes(raw_seed)).decode('ascii'),
         counter,
         token_type,
     )
@@ -130,10 +131,10 @@ def key_to_seed(key_with_checksum):
     if not verify_checksum(key_with_checksum):
         raise ValueError("Checksum of {0} doesn't match".format(key_with_checksum))
     key = key_with_checksum[:-CHECKSUM_LENGTH]
-    seed = sha256(key + settings.SECRET_KEY).digest()
+    seed = sha256(force_bytes(key + settings.SECRET_KEY)).digest()
     # encutil.encrypt and encutil.decrypt use the null character as padding
     # delimiter, and the seed should thus not contain it
-    seed = seed.replace("\x00", "0")
+    seed = seed.replace(b"\x00", b"0")
     return seed
 
 def verify_checksum(key_with_checksum):
@@ -148,7 +149,7 @@ def verify_checksum(key_with_checksum):
     key_with_checksum = key_with_checksum.lower()
     main = key_with_checksum[:-CHECKSUM_LENGTH]
     checksum = key_with_checksum[-CHECKSUM_LENGTH:]
-    return md5(main).hexdigest()[:CHECKSUM_LENGTH] == checksum
+    return md5(force_bytes(main)).hexdigest()[:CHECKSUM_LENGTH] == checksum
 
 def random_base36_with_checksum(length=10):
     """
@@ -156,7 +157,7 @@ def random_base36_with_checksum(length=10):
     """
     alphabet = string.digits + string.ascii_lowercase
     base36 = "".join([random.choice(alphabet) for _ in range(length)])
-    checksum = md5(base36).hexdigest()[:CHECKSUM_LENGTH].lower()
+    checksum = md5(force_bytes(base36)).hexdigest()[:CHECKSUM_LENGTH].lower()
     return "%s%s" % (base36, checksum)
 
 
