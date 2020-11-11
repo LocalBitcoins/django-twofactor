@@ -1,4 +1,5 @@
 import logging
+import random
 import time
 
 from base64 import b32encode
@@ -30,6 +31,16 @@ logger = logging.getLogger(__name__)
 
 def hex(s):
     return ":".join("{0:x}".format(ord(c)) for c in s)
+
+
+def auth_code_lock(auth_type, auth_code, username):
+    content = '{}_{}'.format(time.time(), random.randint(0, 99999999999))
+    test = cache.get_or_set(
+        'auth_code_lock_2fa_{}_{}_{}'.format(auth_type, auth_code, username),
+        content,
+        10,
+    )
+    return content == test
 
 
 class UserAuthToken(models.Model):
@@ -68,6 +79,10 @@ class UserAuthToken(models.Model):
         user, at the current time. (TOTP)
         """
 
+        # For DB replication, just to be sure...
+        if not auth_code_lock('totp', auth_code, self.user.username):
+            return False
+
         # Do not allow the same time-based two-factor code to be used within 40 seconds
         lock_key = "two-factor-lock-%s-%s" % (self.user.username, auth_code)
         lock = cache.get(lock_key)
@@ -84,6 +99,10 @@ class UserAuthToken(models.Model):
         Checks whether `auth_code` is a valid authentication code for this
         user, for the current iteration. (HOTP)
         """
+
+        # For DB replication, just to be sure...
+        if not auth_code_lock('hotp', auth_code, self.user.username):
+            return False
 
         # Do not allow too many retries. This is not perfectly atomic, but good enough.
         ratelimit_key = "two-factor-ratelimit-%s-%s" % (self.user.username, self.counter)
