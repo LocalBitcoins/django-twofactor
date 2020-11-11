@@ -14,11 +14,9 @@ from django_twofactor.util import (
     check_hotp,
     decrypt_value,
     encrypt_value,
-    get_hotp,
     get_google_url,
     random_seed,
 )
-
 
 
 HOTP_MAX_COUNTER = getattr(settings, "HOTP_MAX_COUNTER", 100)
@@ -28,6 +26,7 @@ HOTP_RATELIMIT_TIMEFRAME = getattr(settings, "HOTP_RATELIMIT_TIMEFRAME", 3600)
 
 
 logger = logging.getLogger(__name__)
+
 
 def hex(s):
     return ":".join("{0:x}".format(ord(c)) for c in s)
@@ -83,11 +82,13 @@ class UserAuthToken(models.Model):
         if not auth_code_lock('totp', auth_code, self.user.username):
             return False
 
-        # Do not allow the same time-based two-factor code to be used within 40 seconds
+        # Do not allow the same time-based two- factor
+        # code to be used within 40 seconds
         lock_key = "two-factor-lock-%s-%s" % (self.user.username, auth_code)
         lock = cache.get(lock_key)
         if lock:
-            logger.warn("Two-factor duplicate authentication attempt %s", self.user.username)
+            logger.warn("Two-factor duplicate authentication attempt %s",
+                        self.user.username)
             return False
 
         cache.set(lock_key, 40)
@@ -104,10 +105,13 @@ class UserAuthToken(models.Model):
         if not auth_code_lock('hotp', auth_code, self.user.username):
             return False
 
-        # Do not allow too many retries. This is not perfectly atomic, but good enough.
-        ratelimit_key = "two-factor-ratelimit-%s-%s" % (self.user.username, self.counter)
+        # Do not allow too many retries. This is
+        # not perfectly atomic, but good enough.
+        ratelimit_key = "two-factor-ratelimit-%s-%s" % (self.user.username,
+                                                        self.counter)
         times = cache.get(ratelimit_key) or []
-        times = [t for t in times if t + HOTP_RATELIMIT_TIMEFRAME > time.time()]
+        times = [t for t in times
+                 if t + HOTP_RATELIMIT_TIMEFRAME > time.time()]
         times.append(time.time())
         cache.set(ratelimit_key, times, HOTP_RATELIMIT_TIMEFRAME)
         if len(times) > HOTP_RATELIMIT_COUNT:
@@ -166,7 +170,8 @@ class UserAuthToken(models.Model):
     def get_last_hotp_token_warning(self, limit=5):
         """ Are we running low on HOTP tokens.
 
-        :param limit: Number of tokens left on the gridcard when we start displaying the warning.
+        :param limit: Number of tokens left on the gridcard
+                      when we start displaying the warning.
 
         Return total available tokensfor this user or 0.
         """
